@@ -1,0 +1,62 @@
+[
+  {
+    "proxyWallet": "0x052e0db825dd10cd00444902565c3a394ccd8d47",
+    "timestamp": 1788544400,
+    "conditionId": "0x17577aa0f823a43afd36e3c9f77bf9007f09656a37d4a7bb9734397f7442659e",
+    "type": "MERGE",
+    "size": 4.5,
+    "usdcSize": 4.5,
+    "transactionHash": "0xcc33",
+    "price": 1,
+    "asset": "",
+    "side": "",
+    "outcomeIndex": 0,
+    "title": "Will Ipswich Town FC vs. Liverpool FC end in a draw?",
+    "outcome": ""
+  },
+  {
+    "proxyWallet": "0x052E0DB825DD10CD00444902565C3A394CCD8D47",
+    "timestamp": 1788544500,
+    "conditionId": "0xaaa1111111111111111111111111111111111111111111111111111111111111",
+    "type": "SPLIT",
+    "size": 10,
+    "usdcSize": 10,
+    "transactionHash": "0xdd44",
+    "price": 1,
+    "asset": "",
+    "side": "",
+    "outcomeIndex": 0,
+    "title": "Will BTC close above 100k?",
+    "outcome": ""
+  },
+  {
+    "proxyWallet": "0x052e0db825dd10cd00444902565c3a394ccd8d47",
+    "timestamp": 1788544600,
+    "conditionId": "0xbbb2222222222222222222222222222222222222222222222222222222222222",
+    "type": "REDEEM",
+    "size": 3.037,
+    "usdcSize": 3.037,
+    "transactionHash": "0xee55",
+    "price": 1,
+    "asset": "78750515827071533171749126745679443330143284910428860198446982709710167332570",
+    "side": "",
+    "outcomeIndex": 1,
+    "title": "Will Ipswich Town FC vs. Liverpool FC end in a draw?",
+    "outcome": "No"
+  },
+  {
+    "proxyWallet": "0x052e0db825dd10cd00444902565c3a394ccd8d47",
+    "timestamp": 1788544700,
+    "conditionId": "0xccc3333333333333333333333333333333333333333333333333333333333333",
+    "type": "MERGE",
+    "size": 0,
+    "usdcSize": 0,
+    "transactionHash": "0xff66",
+    "price": 1,
+    "asset": "",
+    "side": "",
+    "outcomeIndex": 0,
+    "title": "A zero merge — there is no size",
+    "outcome": ""
+  }
+]

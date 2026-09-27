@@ -1,0 +1,38 @@
+[package]
+name = "garnet-clob"
+description = "Polymarket CLOB v2 client. Carried over from the predecessor without the maker modules."
+version = "0.1.0"
+edition.workspace = true
+
+[features]
+default = []
+# Exposes MockClobClient outside of #[cfg(test)]
+mock = []
+
+[dependencies]
+garnet-bus = { path = "../garnet-bus" }
+garnet-types = { path = "../garnet-types" }
+garnet-redis = { path = "../garnet-redis" }
+async-trait = "0.1"
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+reqwest = { version = "0.12", default-features = false, features = ["json", "gzip", "rustls-tls", "socks"] }
+rust_decimal = { workspace = true }
+rust_decimal_macros = { workspace = true }
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { workspace = true }
+thiserror = "2"
+tracing = "0.1"
+alloy = { version = "2", default-features = false, features = ["contract", "provider-http", "reqwest", "signer-local", "network", "eip712"] }
+rand = "0.8"
+dashmap = "5"
+hmac = "0.12"
+sha2 = "0.10"
+base64 = "0.22"
+polymarket_client_sdk_v2 = { version = "=0.7.0", features = ["clob"] }
+
+[dev-dependencies]
+tokio = { workspace = true }
+tokio-test = "0.4"
+wiremock = "0.6"

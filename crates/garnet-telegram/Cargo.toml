@@ -1,0 +1,28 @@
+[package]
+name = "garnet-telegram"
+version = "0.1.0"
+edition.workspace = true
+
+[[bin]]
+name = "garnet-tg"
+path = "src/main.rs"
+
+[dependencies]
+garnet-core = { path = "../garnet-core" }
+garnet-risk = { path = "../garnet-risk" }
+garnet-db = { path = "../garnet-db" }
+garnet-types = { path = "../garnet-types" }
+garnet-config = { path = "../garnet-config" }
+garnet-bus = { path = "../garnet-bus" }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+sqlx = { workspace = true }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+rust_decimal = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+tokio-stream = "0.1"
+
+[dev-dependencies]
+rust_decimal_macros = { workspace = true }
+async-nats = "0.35"

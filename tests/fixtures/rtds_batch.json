@@ -1,0 +1,30 @@
+{
+  "topic": "activity",
+  "type": "trades",
+  "timestamp": 1788447230000,
+  "connection_id": "c1",
+  "payload": [
+    {
+      "proxyWallet": "0xleader1",
+      "conditionId": "0xsports1",
+      "outcome": "Los Angeles Lakers",
+      "asset": "tok_lal",
+      "side": "MERGE",
+      "price": 0.42,
+      "size": 10,
+      "timestamp": 1788447229,
+      "transactionHash": "0xddd1"
+    },
+    {
+      "proxyWallet": "0xleader1",
+      "conditionId": "0xtotals1",
+      "outcome": "Over 2.5",
+      "asset": "tok_over",
+      "side": "SELL",
+      "price": 0.62,
+      "size": 80,
+      "timestamp": 1788447229,
+      "transactionHash": "0xddd2"
+    }
+  ]
+}

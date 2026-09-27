@@ -1,0 +1,10 @@
+[package]
+name = "garnet-config"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+rust_decimal = { workspace = true }
+anyhow = { workspace = true }
+toml = "0.8"

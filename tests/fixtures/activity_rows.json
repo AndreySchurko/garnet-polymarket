@@ -1,0 +1,48 @@
+[
+  {
+    "proxyWallet": "0x052e0db825dd10cd00444902565c3a394ccd8d47",
+    "timestamp": 1788544111,
+    "conditionId": "0x17577aa0f823a43afd36e3c9f77bf9007f09656a37d4a7bb9734397f7442659e",
+    "type": "TRADE",
+    "size": 1.518515,
+    "usdcSize": 1.241677,
+    "transactionHash": "0xdfa409f56bee72f5ace3c392470ea22e5dbe6693486963ff67882fcc95f0d176",
+    "price": 0.8099999012,
+    "asset": "78750515827071533171749126745679443330143284910428860198446982709710167332570",
+    "side": "BUY",
+    "outcomeIndex": 1,
+    "title": "Will Ipswich Town FC vs. Liverpool FC end in a draw?",
+    "slug": "epl-ips-liv-2026-09-04-draw",
+    "outcome": "No"
+  },
+  {
+    "proxyWallet": "0x052E0DB825DD10CD00444902565C3A394CCD8D47",
+    "timestamp": 1788544200,
+    "conditionId": "0x17577aa0f823a43afd36e3c9f77bf9007f09656a37d4a7bb9734397f7442659e",
+    "type": "TRADE",
+    "size": 2,
+    "usdcSize": 1.7,
+    "transactionHash": "0xaa11",
+    "price": 0.85,
+    "asset": "78750515827071533171749126745679443330143284910428860198446982709710167332570",
+    "side": "SELL",
+    "outcomeIndex": 1,
+    "title": "Will Ipswich Town FC vs. Liverpool FC end in a draw?",
+    "outcome": "No"
+  },
+  {
+    "proxyWallet": "0x052e0db825dd10cd00444902565c3a394ccd8d47",
+    "timestamp": 1788544300,
+    "conditionId": "0x17577aa0f823a43afd36e3c9f77bf9007f09656a37d4a7bb9734397f7442659e",
+    "type": "REDEEM",
+    "size": 3.037,
+    "usdcSize": 3.037,
+    "transactionHash": "0xbb22",
+    "price": 1,
+    "asset": "78750515827071533171749126745679443330143284910428860198446982709710167332570",
+    "side": "",
+    "outcomeIndex": 1,
+    "title": "Will Ipswich Town FC vs. Liverpool FC end in a draw?",
+    "outcome": "No"
+  }
+]

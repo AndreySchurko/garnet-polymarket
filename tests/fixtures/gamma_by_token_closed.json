@@ -1,0 +1,8 @@
+[{
+  "conditionId": "0x17577aa0f823a43afd36e3c9f77bf9007f09656a37d4a7bb9734397f7442659e",
+  "question": "Will Ipswich Town FC vs. Liverpool FC end in a draw?",
+  "closed": true,
+  "negRisk": true,
+  "feesEnabled": true,
+  "feeSchedule": { "exponent": 1, "rate": 0.05, "takerOnly": true, "rebateRate": 0.15 }
+}]

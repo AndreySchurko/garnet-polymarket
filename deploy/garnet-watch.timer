@@ -1,0 +1,20 @@
+# The watcher runs every five minutes.
+#
+# Less often, and a divergence goes unnoticed for half an hour; more often, and
+# it starts competing for the database with the very thing it watches. Five
+# minutes is twice as often as the equity snapshot (300 s) and ten times less
+# often than its own heartbeat threshold.
+[Unit]
+Description=Garnet watcher every five minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=5min
+# Jitter, so that the watcher does not wake the database at the very same
+# instant as the equity snapshot: two ticks that coincide in phase once will
+# coincide forever after.
+RandomizedDelaySec=30
+AccuracySec=10s
+
+[Install]
+WantedBy=timers.target

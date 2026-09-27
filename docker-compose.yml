@@ -1,0 +1,44 @@
+# Infrastructure: Postgres, Redis, NATS.
+#
+# Three properties here are not cosmetic:
+#
+#   * `restart: unless-stopped` — without it the containers do not come back
+#     after a host reboot, and the systemd unit of the trading process goes into
+#     an endless restart loop against a database that is not there;
+#   * a **named volume** for the Postgres data. It used to be anonymous, living
+#     under a nameless hash: the only thing distinguishing a database with live
+#     settlements from junk was human memory. A name makes it visible, and
+#     `docker volume ls` meaningful.
+#   * an explicit `name:` for the project and for the volume. Without them both
+#     are derived from the directory name, so renaming the checkout silently
+#     points compose at a **new, empty** volume while the old one keeps the
+#     data — a rename that reads as total data loss. Pinned here, the names no
+#     longer depend on where the repository happens to sit.
+
+name: garnet
+
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: garnet
+      POSTGRES_PASSWORD: garnet
+      POSTGRES_DB: garnet
+    ports: ["5433:5432"]
+    command: ["postgres", "-c", "shared_buffers=64MB", "-c", "max_connections=50"]
+    volumes:
+      - garnet_pgdata:/var/lib/postgresql/data
+      - ./scripts/initdb:/docker-entrypoint-initdb.d:ro
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    ports: ["6380:6379"]
+  nats:
+    image: nats:2
+    restart: unless-stopped
+    ports: ["4223:4222"]
+
+volumes:
+  garnet_pgdata:
+    name: garnet_pgdata

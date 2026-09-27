@@ -1,0 +1,21 @@
+[package]
+name = "garnet-watch"
+description = "The watcher: a separate process that watches the trading one and reports."
+version = "0.1.0"
+edition.workspace = true
+
+[[bin]]
+name = "garnet-watch"
+path = "src/main.rs"
+
+[dependencies]
+garnet-db = { path = "../garnet-db" }
+garnet-config = { path = "../garnet-config" }
+chrono = { workspace = true }
+anyhow = { workspace = true }
+tokio = { workspace = true }
+rust_decimal = { workspace = true }
+sqlx = { workspace = true }
+
+[dev-dependencies]
+rust_decimal_macros = { workspace = true }

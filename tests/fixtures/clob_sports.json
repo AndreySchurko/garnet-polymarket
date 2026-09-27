@@ -1,0 +1,29 @@
+{
+  "condition_id": "0xsports1",
+  "question": "Los Angeles Lakers vs. Boston Celtics",
+  "market_slug": "nba-lal-bos-2026-09-03",
+  "game_start_time": "2026-09-03T23:30:00Z",
+  "end_date_iso": "2026-09-04T03:00:00Z",
+  "neg_risk": false,
+  "closed": false,
+  "tags": [
+    "Sports",
+    "NBA"
+  ],
+  "tokens": [
+    {
+      "token_id": "tok_lal",
+      "outcome": "Los Angeles Lakers",
+      "price": 0.42,
+      "winner": false
+    },
+    {
+      "token_id": "tok_bos",
+      "outcome": "Boston Celtics",
+      "price": 0.58,
+      "winner": false
+    }
+  ],
+  "minimum_tick_size": 0.01,
+  "minimum_order_size": 5
+}

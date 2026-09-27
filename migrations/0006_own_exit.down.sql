@@ -1,0 +1,2 @@
+DELETE FROM orders WHERE signal_id IS NULL;
+ALTER TABLE orders ALTER COLUMN signal_id SET NOT NULL;

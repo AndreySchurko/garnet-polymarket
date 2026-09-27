@@ -1,0 +1,24 @@
+name: garnet
+
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: garnet
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_DB: garnet
+    volumes: ["garnet_pgdata:/var/lib/postgresql/data"]
+    ports: ["127.0.0.1:5432:5432"]
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    ports: ["127.0.0.1:6379:6379"]
+  nats:
+    image: nats:2
+    restart: unless-stopped
+    ports: ["127.0.0.1:4222:4222"]
+
+volumes:
+  garnet_pgdata:
+    name: garnet_pgdata

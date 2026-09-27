@@ -1,0 +1,22 @@
+/target
+
+# Finder droppings: appear in every directory ever opened in a file browser.
+.DS_Store
+
+# Secrets of the live path: only .env.example is versioned.
+.env
+.env.*
+!.env.example
+
+# The box's live config: only the example is versioned.
+/config.toml
+/config.toml.bak
+
+# Production database dumps. They contain the addresses of copied wallets —
+# precisely what distinguishes our registry from anyone else's — and must never
+# be versioned, at any size. Only fixtures with synthetic addresses are
+# (docs/fixtures/).
+*.sql.gz
+*.dump
+/*.sql
+/snapshots/

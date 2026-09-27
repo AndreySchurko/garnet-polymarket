@@ -1,0 +1,19 @@
+{
+  "topic": "activity",
+  "type": "trades",
+  "timestamp": 1788447220000,
+  "connection_id": "c1",
+  "payload": {
+    "proxyWallet": "0xsomebody_else",
+    "conditionId": "0xcrypto1",
+    "outcome": "Down",
+    "asset": "tok_down",
+    "side": "BUY",
+    "price": 0.49,
+    "size": 500,
+    "timestamp": 1788447219,
+    "transactionHash": "0xccc1",
+    "title": "Bitcoin Up or Down",
+    "slug": "btc-updown"
+  }
+}

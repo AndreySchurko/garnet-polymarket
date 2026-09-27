@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Garnet</title>
+<!--
+  The only external script, and it has to be external: the mini-app receives
+  `initData` from it alone, and Telegram updates the file in place. Pinning it by
+  hash (SRI) means breaking sign-in on the day Telegram ships a fix; a local copy
+  is the same thing, only silently and later. Nothing in this page sits below this
+  script's code: all it brings is a signed string, which the server verifies.
+-->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root { color-scheme: light dark; --line: #8884; --dim: #8888; }
+  body { margin: 0; padding: 12px; font: 15px/1.45 system-ui, -apple-system, sans-serif; }
+  h2 { font-size: 15px; margin: 20px 0 8px; }
+  .row { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
+  .big { font-size: 26px; font-weight: 600; }
+  .dim { color: var(--dim); font-size: 13px; }
+  .pos { color: #1a9d4b; } .neg { color: #d33; }
+  .warn { color: #c80; font-size: 13px; }
+  button { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line);
+           background: transparent; color: inherit; cursor: pointer; }
+  button[aria-pressed="true"] { background: #8882; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td.num { text-align: right; white-space: nowrap; }
+  svg { width: 100%; height: 130px; display: block; }
+  input { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line);
+          background: transparent; color: inherit; width: 8em; }
+  #err { color: #d33; }
+</style>
+</head>
+<body>
+<div id="err"></div>
+
+<div class="row">
+  <button id="b-live" aria-pressed="true">live</button>
+  <button id="b-shadow" aria-pressed="false">shadow</button>
+  <span style="flex:1"></span>
+  <button id="p-day" aria-pressed="true">day</button>
+  <button id="p-week" aria-pressed="false">week</button>
+  <button id="p-all" aria-pressed="false">all</button>
+</div>
+
+<div class="card">
+  <div class="big" id="total">—</div>
+  <div class="dim" id="breakdown"></div>
+  <div class="warn" id="unpriced"></div>
+  <svg id="chart" viewBox="0 0 300 130" preserveAspectRatio="none"></svg>
+</div>
+
+<div class="card">
+  <div id="pnl"></div>
+</div>
+
+<h2>Wallets</h2>
+<table id="wallets"></table>
+
+<h2>Open positions</h2>
+<table id="positions"></table>
+
+<h2>Signals</h2>
+<table id="signals"></table>
+
+<script>
+const tg = window.Telegram?.WebApp;
+tg?.ready();
+tg?.expand();
+
+let mode = "live";
+let period = "day";
+
+// initData goes out as a header on every request: there are no sessions and no
+// cookies, so there is nothing to steal and nothing to rotate.
+async function api(path) {
+  const r = await fetch(path, { headers: { "X-Init-Data": tg?.initData ?? "" } });
+  if (!r.ok) throw new Error(r.status === 401 ? "access not confirmed" : "error " + r.status);
+  return r.json();
+}
+
+const money = (v) => v === null || v === undefined ? "—" : "$" + (+v).toFixed(2);
+const signed = (v) => {
+  const n = +v;
+  const cls = n > 0 ? "pos" : n < 0 ? "neg" : "";
+  const s = (n > 0 ? "+" : "") + n.toFixed(2);
+  return `<span class="${cls}">${s}</span>`;
+};
+// Quotes are escaped alongside angle brackets: half of these strings are
+// substituted into attributes (`value=`, `data-address=`), and a single quote in a
+// nickname escapes the attribute — breaking the layout first and then everything
+// else. The market and outcome texts come from an RTDS frame, that is, from outside.
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[c]));
+const ago = (iso) => {
+  const s = Math.max(0, (Date.now() - Date.parse(iso)) / 1000);
+  if (s < 90) return Math.round(s) + "s ago";
+  if (s < 5400) return Math.round(s / 60) + "m ago";
+  if (s < 172800) return Math.round(s / 3600) + "h ago";
+  return Math.round(s / 86400) + "d ago";
+};
+
+function chart(points) {
+  const el = document.getElementById("chart");
+  if (points.length < 2) { el.innerHTML = ""; return; }
+  const ys = points.map((p) => +p.total_usd);
+  const lo = Math.min(...ys), hi = Math.max(...ys);
+  const span = hi - lo || 1;
+  const path = ys
+    .map((y, i) => `${(i / (ys.length - 1)) * 300},${125 - ((y - lo) / span) * 120}`)
+    .join(" L ");
+  // Our own polyline rather than a library: one curve is not worth an external
+  // dependency pulled from someone else's CDN into a mini-app.
+  el.innerHTML = `<polyline fill="none" stroke="currentColor" stroke-width="1.5"
+                   points="${path.replace(/ L /g, " ")}" vector-effect="non-scaling-stroke"/>`;
+}
+
+async function load() {
+  document.getElementById("err").textContent = "";
+  try {
+    const [s, series, ws, ps, sig] = await Promise.all([
+      api(`/api/summary?period=${period}`),
+      api(`/api/equity?mode=${mode}`),
+      api("/api/wallets"),
+      api("/api/positions"),
+      api("/api/signals?n=25"),
+    ]);
+
+    const bal = s.balances.find((b) => b.mode === mode) ?? {};
+    document.getElementById("total").textContent = money(bal.total_usd);
+    document.getElementById("breakdown").textContent =
+      `free ${money(bal.cash_usd)} · positions ${money(bal.positions_value)}` +
+      (bal.ts ? ` · snapshot ${ago(bal.ts)}` : " · no snapshots yet");
+    document.getElementById("unpriced").textContent =
+      bal.unpriced > 0 ? `⚠️ ${bal.unpriced} position(s) without a price — the total is understated by their value` : "";
+
+    chart(series);
+
+    const p = s.pnl.find((r) => r.mode === mode);
+    document.getElementById("pnl").innerHTML = p
+      ? `Result: ${signed(p.pnl_usd)} · closed ${p.closed} (won ${p.won})
+         <div class="dim">stake ${money(p.cost_usd)} · fees ${money(p.fees_usd)} · payout ${money(p.payout_usd)}</div>`
+      : "No positions closed in this period.";
+
+    document.getElementById("wallets").innerHTML = ws.length
+      ? ws.map((w) => `<tr>
+          <td>${w.enabled ? "🟢" : "⚪"}
+              <input value="${esc(w.nickname ?? "")}" placeholder="nickname"
+                     data-address="${esc(w.address)}" class="nick">
+              <div class="dim">${esc(w.address)}</div></td>
+          <td class="num">${esc(w.mode)}<div class="dim">$${esc(w.stake_usd)} · ${esc(w.slippage_pct)}%</div></td>
+          <td class="num">${signed(w.pnl_day)}<div class="dim">24h</div></td>
+        </tr>`).join("")
+      : `<tr><td class="dim">The registry is empty — add a wallet in the bot: /add</td></tr>`;
+
+    document.getElementById("positions").innerHTML = ps.length
+      ? ps.map((x) => `<tr>
+          <td>${esc(x.outcome || x.token_id.slice(0, 12) + "…")}
+              <div class="dim">${esc(x.display)} · ${esc(x.mode)} · ${ago(x.opened_at)}</div></td>
+          <td class="num">${esc(x.size)} sh<div class="dim">${money(x.cost_usd)}</div></td>
+        </tr>`).join("")
+      : `<tr><td class="dim">No open positions.</td></tr>`;
+
+    document.getElementById("signals").innerHTML = sig.length
+      ? sig.map((x) => `<tr>
+          <td>${x.verdict === "copy" ? "🟢" : "⛔"} ${esc(x.verdict)}
+              <div class="dim">${esc(x.outcome || x.market)} · ${esc(x.display)} · ${esc(x.mode)}</div></td>
+          <td class="num">${money(x.target_size_usd)}<div class="dim">${ago(x.ts)}</div></td>
+        </tr>`).join("")
+      : `<tr><td class="dim">No signals yet.</td></tr>`;
+
+    for (const input of document.querySelectorAll("input.nick")) {
+      input.addEventListener("change", async () => {
+        await fetch("/api/nickname", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Init-Data": tg?.initData ?? "" },
+          body: JSON.stringify({ address: input.dataset.address, nickname: input.value }),
+        });
+        load();
+      });
+    }
+  } catch (e) {
+    document.getElementById("err").textContent = e.message;
+  }
+}
+
+function pick(group, value) {
+  for (const [id, v] of group) {
+    document.getElementById(id).setAttribute("aria-pressed", String(v === value));
+  }
+}
+document.getElementById("b-live").onclick = () => { mode = "live"; pick([["b-live","live"],["b-shadow","shadow"]], mode); load(); };
+document.getElementById("b-shadow").onclick = () => { mode = "shadow"; pick([["b-live","live"],["b-shadow","shadow"]], mode); load(); };
+for (const [id, v] of [["p-day","day"],["p-week","week"],["p-all","all"]]) {
+  document.getElementById(id).onclick = () => {
+    period = v;
+    pick([["p-day","day"],["p-week","week"],["p-all","all"]], period);
+    load();
+  };
+}
+
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>

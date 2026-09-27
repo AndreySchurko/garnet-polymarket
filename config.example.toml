@@ -1,0 +1,119 @@
+database_url = "postgres://garnet:garnet@localhost:5432/garnet"
+
+[shadow]
+# Shared virtual capital. The ledger may go negative; it never blocks trading.
+initial_capital_usd = 1000.0
+
+[feed]
+poll_interval_secs = 3
+stall_threshold_secs = 900
+control_stall_secs = 120
+# The third detection circuit: Polygon logs (invariant 41).
+#
+# It does not depend on Polymarket's infrastructure at all: on 31.08.2026 the
+# activity/trades topic went down platform-wide for hours, from every IP at
+# once. More reliable than the socket, but NOT faster: a log appears once the
+# settlement transaction is in a block, and the order was matched by the CLOB
+# before that.
+#
+# An empty string DISABLES the circuit — it needs a node of your own. If ws is
+# set while rpc is empty, the process refuses to start: block timestamps would
+# be unavailable, and without them trades would be recorded with our clock
+# instead of the leader's.
+polygon_ws_url = ""
+polygon_rpc_url = ""
+[settlement]
+hot_interval_secs = 600
+cold_interval_secs = 3600
+batch = 200
+
+[reconcile]
+interval_secs = 600
+# How many seconds an order with status `unknown` counts as "in flight" and
+# therefore explains a divergence between the ledger and the chain (invariant
+# 48). The outcome of an IOC order is known within seconds, but an `unknown` row
+# is never moved to another status by anyone — without an expiry it would
+# explain a genuine loss of tokens forever. Zero disables the explanation: the
+# only remaining excuse is market resolution.
+in_flight_window_secs = 900
+
+[flatten]
+# The installation's name, forming the second half of the emergency-close
+# confirmation phrase: `panic <name>`. The point is that a phrase copied from
+# documentation or from someone else's chat log will NOT fire on this host — an
+# identical name everywhere would strip the phrase of half its job.
+name = "garnet"
+
+[equity]
+snapshot_interval_secs = 300
+
+[api]
+clob_host = "https://clob.polymarket.com"
+gamma_host = "https://gamma-api.polymarket.com"
+rtds_url = "wss://ws-live-data.polymarket.com"
+
+[telegram]
+# An empty list means the bot answers nobody. Find your own chat id via
+# @userinfobot.
+allowed_chat_ids = []
+poll_timeout_secs = 30
+api_host = "https://api.telegram.org"
+# Hour of the daily summary, UTC. An empty string means no summary.
+daily_summary_utc = "21:00"
+# Which fills to push to the chat: live | all | none. Alerts and resolutions are
+# always sent.
+push_fills = "live"
+
+[dashboard]
+# Loopback only: the outside world reaches it through Caddy, which also
+# terminates TLS.
+bind = "127.0.0.1:3001"
+init_data_max_age_secs = 86400
+# Public address of the mini-app for the /app button. Empty string: no button.
+public_url = ""
+
+[copy]
+# A gap in the leader's feed after which their next buy in the same market
+# counts as a new decision rather than another slice of the previous order
+# (invariant 29). A taker order consumes as much of the book as is standing
+# there and arrives as that many frames with different tx_hash values — dedup by
+# hash does not catch them. Zero disables the collapse.
+slice_window_secs = 300
+# After how many hours an open position is sold into the book instead of waiting
+# for resolution. Zero disables it and the loop never starts.
+#
+# This is a rule about capital, not about returns: on a prediction market the
+# position will reach zero or one anyway, and dumping into a thin book is
+# usually worse than waiting. Enable it when money is tied up, not when you
+# would like to lose less.
+max_hold_hours = 0
+
+[risk]
+# Acceptable realised live loss per UTC day, in dollars. Zero disables the stop,
+# and `--preflight --live` treats zero as a refusal: a bot that merely loses
+# money will not otherwise stop on its own.
+#
+# Computed from closed positions: revaluing open ones depends on the mid of the
+# book, which some positions do not have at all, and a stop triggered by a
+# missing price is the worst kind of false alarm. It latches for the day and
+# lives in the database: a stop that a restart undoes is not a stop.
+daily_loss_limit_usd = 0.0
+# Ceiling on open exposure per event, separately per mode. Computed by
+# condition_id: the outcomes of one condition are correlated, and a per-token
+# ceiling is bypassed by buying the neighbouring outcome. A remainder smaller
+# than the stake is a refusal, not a reduced order. Zero disables it.
+#
+# Set this against concentration, not for returns: as a way to raise ROI, a
+# ceiling only works insofar as it accidentally trims slices of one order — and
+# that is what the slice window does, deliberately.
+per_market_cap_usd = 0.0
+# Rate limit on entries per wallet (invariant 44). The window is measured by OUR
+# clock: what is being limited here is the speed at which we spend capital, not
+# an interpretation of the leader's behaviour.
+#
+# fire_limit = 0 DISABLES the refusal, and that is the default: a threshold
+# comes from a measurement, not from a guess, and no measurement on Garnet's own data
+# exists yet. The counting happens regardless — see /firerate, which also shows
+# the counterfactual ("had the limit been set, N would have been blocked").
+fire_window_secs = 30
+fire_limit = 0

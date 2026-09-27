@@ -1,0 +1,19 @@
+{
+  "topic": "activity",
+  "type": "trades",
+  "timestamp": 1788447215000,
+  "connection_id": "c1",
+  "payload": {
+    "proxyWallet": "0xleader1",
+    "conditionId": "",
+    "outcome": "",
+    "asset": "tok_up",
+    "side": "BUY",
+    "price": 0.51,
+    "size": 200,
+    "timestamp": 1788447214,
+    "transactionHash": "0xbbb1",
+    "title": "",
+    "slug": ""
+  }
+}

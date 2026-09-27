@@ -1,0 +1,20 @@
+[package]
+name = "garnet-feed"
+description = "The RTDS socket: subscription, reconnection, silence detection."
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+garnet-clob = { path = "../garnet-clob" }
+tokio = { workspace = true }
+tokio-tungstenite = { version = "0.23", features = ["native-tls"] }
+futures-util = { version = "0.3", default-features = false, features = ["std", "sink"] }
+serde_json = { workspace = true }
+rust_decimal = { workspace = true }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+anyhow = { workspace = true }
+tracing = "0.1"
+
+[dev-dependencies]
+tokio = { workspace = true }
+rust_decimal_macros = { workspace = true }

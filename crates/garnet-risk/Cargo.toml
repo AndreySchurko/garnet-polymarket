@@ -1,0 +1,11 @@
+[package]
+name = "garnet-risk"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+chrono = { workspace = true }
+rust_decimal = { workspace = true }
+
+[dev-dependencies]
+rust_decimal_macros = { workspace = true }

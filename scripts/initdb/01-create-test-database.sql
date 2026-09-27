@@ -1,0 +1,11 @@
+-- Runs once, on the first initialisation of an empty data directory.
+--
+-- The test database is created here rather than by hand because nothing else
+-- created it: `TEST_DATABASE_URL` defaults to `garnet_test`, every document says
+-- the tests go there, and yet a fresh clone had no step that brought it into
+-- existence — so the documented `docker compose up -d && cargo test` failed on a
+-- connection error that says nothing about the real cause.
+--
+-- It is deliberately absent from docker-compose.prod.yml: the trading host has no
+-- reason to hold a database whose entire purpose is to be written to carelessly.
+CREATE DATABASE garnet_test;

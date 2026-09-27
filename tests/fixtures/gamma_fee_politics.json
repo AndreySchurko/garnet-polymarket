@@ -1,0 +1,7 @@
+[{
+  "conditionId": "0xgeo1",
+  "question": "Xi Jinping out before 2027?",
+  "feeType": "politics_fees",
+  "feesEnabled": true,
+  "feeSchedule": { "exponent": 1, "rate": 0.04, "takerOnly": true, "rebateRate": 0.25 }
+}]

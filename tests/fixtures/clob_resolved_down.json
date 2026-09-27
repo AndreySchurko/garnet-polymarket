@@ -1,0 +1,14 @@
+{
+  "condition_id": "0xcrypto3",
+  "question": "Solana Up or Down - September 2, 4PM ET",
+  "market_slug": "solana-up-or-down-september-2-4pm-et",
+  "game_start_time": null,
+  "end_date_iso": "2026-09-02T20:00:00Z",
+  "neg_risk": false,
+  "closed": true,
+  "tags": ["Crypto"],
+  "tokens": [
+    { "token_id": "tok_sol_up", "outcome": "Up", "price": 0.0, "winner": false },
+    { "token_id": "tok_sol_down", "outcome": "Down", "price": 1.0, "winner": true }
+  ]
+}

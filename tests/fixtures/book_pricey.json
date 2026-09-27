@@ -1,0 +1,14 @@
+{
+  "market": "0xsports1",
+  "asset_id": "tok_lal",
+  "tick_size": "0.01",
+  "min_order_size": "5",
+  "neg_risk": false,
+  "asks": [
+    { "price": "0.70", "size": "100" },
+    { "price": "0.60", "size": "10" }
+  ],
+  "bids": [
+    { "price": "0.55", "size": "40" }
+  ]
+}

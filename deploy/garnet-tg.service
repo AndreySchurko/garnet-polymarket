@@ -1,0 +1,28 @@
+# The operator's Telegram control.
+#
+# A separate unit on purpose: the bot must survive a restart of the trading
+# process and vice versa. It is precisely what remains available to press /kill
+# when the trading process is misbehaving — falling over together with it is the
+# one thing it must not do.
+[Unit]
+Description=Garnet Telegram bot
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=deploy
+WorkingDirectory=/home/deploy/garnet-polymarket
+EnvironmentFile=/home/deploy/garnet-polymarket/.env
+ExecStart=/home/deploy/garnet-polymarket/target/release/garnet-tg --config config.toml
+
+Restart=always
+RestartSec=10
+
+LimitCORE=0
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

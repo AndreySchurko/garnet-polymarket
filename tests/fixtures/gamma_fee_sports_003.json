@@ -1,0 +1,7 @@
+[{
+  "conditionId": "0xsports1",
+  "question": "Los Angeles Lakers vs. Boston Celtics",
+  "feeType": "sports_fees",
+  "feesEnabled": true,
+  "feeSchedule": { "exponent": 1, "rate": 0.03, "takerOnly": true, "rebateRate": 0.15 }
+}]

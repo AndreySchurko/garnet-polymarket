@@ -1,0 +1,19 @@
+{
+  "topic": "activity",
+  "type": "trades",
+  "timestamp": 1788447210000,
+  "connection_id": "c1",
+  "payload": {
+    "proxyWallet": "0xleader1",
+    "conditionId": "0xsports1",
+    "outcome": "Los Angeles Lakers",
+    "asset": "tok_lal",
+    "side": "BUY",
+    "price": 0.42,
+    "size": 120,
+    "timestamp": 1788447208,
+    "transactionHash": "0xaaa1",
+    "title": "Los Angeles Lakers vs. Boston Celtics",
+    "slug": "nba-lal-bos-2026-09-03"
+  }
+}

@@ -1,0 +1,31 @@
+# Garnet trading process.
+#
+# The infrastructure lives in docker compose (`restart: unless-stopped`), so
+# this unit depends on Docker rather than bringing the containers up itself: two
+# systems each restarting the same thing will argue at the worst possible
+# moment.
+[Unit]
+Description=Garnet trading core
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=deploy
+WorkingDirectory=/home/deploy/garnet-polymarket
+EnvironmentFile=/home/deploy/garnet-polymarket/.env
+ExecStart=/home/deploy/garnet-polymarket/target/release/garnet-core --config config.toml
+
+# The database may not be ready yet after a reboot: the process will fail and
+# come back.
+Restart=always
+RestartSec=10
+
+# Keys and tokens must not leak into a core dump.
+LimitCORE=0
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

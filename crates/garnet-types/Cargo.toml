@@ -1,0 +1,11 @@
+[package]
+name = "garnet-types"
+description = "The shared vocabulary: whatever more than one crate needs."
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+sqlx = { workspace = true }
+rust_decimal = { workspace = true }
+chrono = { version = "0.4", features = ["serde"] }

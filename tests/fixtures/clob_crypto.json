@@ -1,0 +1,28 @@
+{
+  "condition_id": "0xcrypto1",
+  "question": "Bitcoin Up or Down - September 3, 4PM ET",
+  "market_slug": "bitcoin-up-or-down-september-3-4pm-et",
+  "game_start_time": null,
+  "end_date_iso": "2026-09-03T20:00:00Z",
+  "neg_risk": false,
+  "closed": false,
+  "tags": [
+    "Crypto"
+  ],
+  "tokens": [
+    {
+      "token_id": "tok_up",
+      "outcome": "Up",
+      "price": 0.51,
+      "winner": false
+    },
+    {
+      "token_id": "tok_down",
+      "outcome": "Down",
+      "price": 0.49,
+      "winner": false
+    }
+  ],
+  "minimum_tick_size": 0.001,
+  "minimum_order_size": 5
+}

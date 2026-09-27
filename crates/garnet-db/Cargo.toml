@@ -1,0 +1,16 @@
+[package]
+name = "garnet-db"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+garnet-types = { path = "../garnet-types" }
+sqlx = { workspace = true }
+rust_decimal = { workspace = true }
+chrono = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+rust_decimal_macros = { workspace = true }

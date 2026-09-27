@@ -1,0 +1,14 @@
+{
+  "condition_id": "0xtotals1",
+  "question": "Will the match have over 2.5 goals?",
+  "market_slug": "epl-over-2-5-goals",
+  "game_start_time": "2026-09-03T19:00:00Z",
+  "end_date_iso": "2026-09-03T21:00:00Z",
+  "neg_risk": false,
+  "closed": false,
+  "tags": ["Sports", "EPL"],
+  "tokens": [
+    { "token_id": "tok_over", "outcome": "Over 2.5", "price": 0.62, "winner": false },
+    { "token_id": "tok_under", "outcome": "Under 2.5", "price": 0.38, "winner": false }
+  ]
+}

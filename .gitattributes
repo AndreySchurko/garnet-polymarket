@@ -1,0 +1,5 @@
+# systemd units and box scripts must keep LF endings: a carriage return becomes
+# part of the directive value, and ExecStart then looks for a path with a
+# trailing "\r".
+*.service text eol=lf
+*.sh      text eol=lf

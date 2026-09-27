@@ -1,0 +1,20 @@
+[workspace]
+resolver = "2"
+members = ["crates/garnet-db", "crates/garnet-core", "crates/garnet-copy-engine", "crates/garnet-risk", "crates/garnet-config", "crates/garnet-bin", "crates/garnet-bus", "crates/garnet-redis", "crates/garnet-clob", "crates/garnet-types", "crates/garnet-blockchain", "crates/garnet-feed", "crates/garnet-telegram", "crates/garnet-dash", "crates/garnet-watch"]
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.90"
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "postgres", "macros", "rust_decimal", "chrono", "migrate"] }
+rust_decimal = { version = "1", features = ["maths", "serde-with-str"] }
+rust_decimal_macros = "1"
+chrono = "0.4"
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.dev]
+debug = 0

@@ -1,0 +1,7 @@
+[{
+  "conditionId": "0xsports2",
+  "question": "Golden State Warriors vs. Denver Nuggets",
+  "feeType": "sports_fees_alt",
+  "feesEnabled": true,
+  "feeSchedule": { "exponent": 1, "rate": 0.05, "takerOnly": true, "rebateRate": 0.15 }
+}]

@@ -1,0 +1,33 @@
+[package]
+name = "garnet-dash"
+version = "0.1.0"
+edition.workspace = true
+
+[[bin]]
+name = "garnet-dash"
+path = "src/main.rs"
+
+[dependencies]
+garnet-db = { path = "../garnet-db" }
+garnet-types = { path = "../garnet-types" }
+garnet-config = { path = "../garnet-config" }
+axum = "0.7"
+tower-http = { version = "0.5", features = ["set-header"] }
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+tokio = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+rust_decimal = { workspace = true }
+chrono = { workspace = true }
+
+[dev-dependencies]
+rust_decimal_macros = { workspace = true }
+tower = { version = "0.5", features = ["util"] }
+http-body-util = "0.1"
+sqlx = { workspace = true }
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"

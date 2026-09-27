@@ -1,0 +1,42 @@
+# The Garnet watcher (invariant 45).
+#
+# A separate process rather than a loop inside `garnet-core`, because five
+# background loops already live in there: a runtime hang or a deadlock on a
+# `Mutex` takes out both the trading and the observation of trading at once —
+# and the first thing to disappear is the one that was supposed to say so.
+#
+# `Type=oneshot`: check, report, exit. It cannot restart or stop the trading
+# process and must not be able to — a watcher that can repair what it watches
+# will sooner or later repair it wrongly, and by then there will be nobody left
+# to explain the divergence.
+[Unit]
+Description=Garnet watcher
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=deploy
+WorkingDirectory=/home/deploy/garnet-polymarket
+EnvironmentFile=/home/deploy/garnet-polymarket/.env
+ExecStart=/home/deploy/garnet-polymarket/target/release/garnet-watch --config config.toml
+
+# Exit code 1 means "a divergence exists", code 2 means "the check could not be
+# performed". Neither is a failure of the UNIT: the watcher did exactly its job.
+# Without this line systemd would mark every problem it FINDS as a breakage of
+# the watcher itself, leaving nothing to distinguish "it broke" from "it found
+# something".
+SuccessExitStatus=1 2
+
+# The watcher yields to trading in everything: it must take neither CPU nor disk
+# from the process it is watching.
+Nice=10
+IOSchedulingClass=idle
+
+# It has no more privileges than reading the database requires.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+RestrictNamespaces=true
+LimitCORE=0

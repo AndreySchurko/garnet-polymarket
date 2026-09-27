@@ -1,0 +1,27 @@
+# The dashboard mini-app.
+#
+# Binds to loopback only; the outside world reaches it through Caddy, which also
+# holds the TLS certificate. A separate unit for the same reason as the bot: a
+# reader must not fall over together with trading, nor bring it down itself.
+[Unit]
+Description=Garnet dashboard
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=deploy
+WorkingDirectory=/home/deploy/garnet-polymarket
+EnvironmentFile=/home/deploy/garnet-polymarket/.env
+ExecStart=/home/deploy/garnet-polymarket/target/release/garnet-dash --config config.toml
+
+Restart=always
+RestartSec=10
+
+LimitCORE=0
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
