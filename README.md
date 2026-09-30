@@ -2,7 +2,7 @@
 
 # ⬡ Garnet
 
-### Copy-trading engine for Polymarket, written in Rust
+### Self-hosted Polymarket copy-trading bot, written in Rust
 
 **No scoring. No screening. No opinions.**
 You name the wallets — the bot copies them, fast, and never second-guesses you.
@@ -15,6 +15,7 @@ You name the wallets — the bot copies them, fast, and never second-guesses you
 
 [**Wallet Reports**](#-wallet-intelligence--the-part-that-actually-makes-money) ·
 [**Quick start**](#-quick-start) ·
+[**Your key**](#-your-private-key) ·
 [**Architecture**](docs/ARCHITECTURE.md) ·
 [**Services**](#-services) ·
 [**Support the project**](#-support-the-project) ·
@@ -154,6 +155,66 @@ settling by label books every win as a total loss. That mistake once fabricated
 | **Health monitor** | measured by **flow**, not liveness | both guards once reported OK while the bot was blind for 6.5 hours |
 | **`panic` flatten** | closes everything | requires a **typed phrase**, not a button — and the phrase includes your installation's own name, so one copied from a chat log won't fire here |
 | **Reconciler** | ledger vs. chain | "could not read" is reported as its own outcome, never as "agreed" |
+
+---
+
+## 🔐 Your private key
+
+> In 2026 GitHub filled up with "Polymarket copy-trading bots" that shipped the
+> operator's `.env` to someone else's server — in most cases through a poisoned npm
+> dependency. You are right to ask what this one does with your key. Here is the
+> answer, and how to check it yourself instead of taking it on trust.
+
+**Where it lives.** In `.env` on your own machine — `chmod 600`, ignored by git — read
+from the environment at start-up. It signs orders locally (EIP-712). The signature goes
+to the exchange; the key does not.
+
+**Where it never goes.** Not into the logs: the start-up config is printed in full, and
+the key, the L2 API secret and the passphrase appear in it as `***REDACTED***` — a test,
+`the_private_key_never_reaches_a_log_line`, holds that line. The key is read in exactly
+two places, `garnet-bin/src/clob_live.rs` and `garnet-blockchain/src/client.rs`, and
+handed straight to the signer as a `SecretString`.
+
+**No phone-home.** No telemetry, no licence server, no update check. This is the
+complete list of hosts Garnet's own code talks to; all but the geoblock probe are
+settings in `config.toml`, and the Polymarket SDK is built with its `clob` feature only
+and pointed at `clob_host`:
+
+| Host | What for |
+|---|---|
+| `clob.polymarket.com` | order books, orders |
+| `polymarket.com/api/geoblock` | preflight only: is your server's IP allowed to trade |
+| `gamma-api.polymarket.com` | market metadata |
+| `data-api.polymarket.com` | `/activity` polling — the safety-net detection circuit |
+| `ws-live-data.polymarket.com` | the RTDS feed — the fast detection circuit |
+| your `POLYGON_RPC_URLS` | chain logs, balances, redemption |
+| `gasstation.polygon.technology` | gas price |
+| `api.telegram.org` | your own `garnet-tg`, with your own token |
+
+The dashboard page additionally loads `telegram-web-app.js` from `telegram.org` in your
+browser — a Telegram Mini App cannot run without it. To see the list for yourself
+(it also prints documentation links and the `example.com` placeholders from tests):
+
+```bash
+grep -rhoE '(https?|wss?)://[a-zA-Z0-9.-]+' --include='*.rs' --include='*.toml' --include='*.html' crates config.example.toml | sort -u
+```
+
+**No npm.** The engine is Rust from end to end; the only JavaScript in the repository
+is the dashboard's inline script. Every dependency is pinned in `Cargo.lock`, and the
+Polymarket SDK is pinned to an exact version (`=0.7.0`).
+
+**You don't need a key to try it.** With no keys in the environment the live path does
+not come up at all — `live path disabled: no keys are set, live wallets will be
+refused` — and [shadow mode](#start-in-shadow-mode-always) runs on public data alone.
+
+**When you do go live:**
+
+- use a **dedicated wallet** funded with what you are prepared to lose — never your main one;
+- Garnet asks for one signing key and **never for a seed phrase**. Anything that asks for a
+  mnemonic to "copy trades" is not a copy-trading bot;
+- read before you run: `cargo tree`, `cargo audit`, and the `grep` above.
+
+Found a way the key could leak? That is exactly what [SECURITY.md](SECURITY.md) is for.
 
 ---
 
