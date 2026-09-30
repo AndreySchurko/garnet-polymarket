@@ -7,7 +7,7 @@ edition.workspace = true
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true }
-async-nats = "0.35"
+async-nats = "0.50"
 tokio = { workspace = true }
 thiserror = "2"
 bytes = "1"

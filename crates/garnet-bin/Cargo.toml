@@ -27,7 +27,7 @@ chrono = { workspace = true }
 
 [dev-dependencies]
 tokio-stream = "0.1"
-async-nats = "0.35"
+async-nats = "0.50"
 rust_decimal_macros = { workspace = true }
 garnet-clob = { path = "../garnet-clob", features = ["mock"] }
 garnet-blockchain = { path = "../garnet-blockchain", features = ["mock"] }

@@ -25,4 +25,4 @@ tokio-stream = "0.1"
 
 [dev-dependencies]
 rust_decimal_macros = { workspace = true }
-async-nats = "0.35"
+async-nats = "0.50"

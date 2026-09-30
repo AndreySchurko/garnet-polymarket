@@ -201,7 +201,10 @@ grep -rhoE '(https?|wss?)://[a-zA-Z0-9.-]+' --include='*.rs' --include='*.toml' 
 
 **No npm.** The engine is Rust from end to end; the only JavaScript in the repository
 is the dashboard's inline script. Every dependency is pinned in `Cargo.lock`, and the
-Polymarket SDK is pinned to an exact version (`=0.7.0`).
+Polymarket SDK is pinned to an exact version (`=0.7.0`). `cargo audit` is clean as of
+2026-09-30 but for one entry: RUSTSEC-2023-0071 in `rsa`, which sits in `Cargo.lock` as a
+dependency of `sqlx-mysql` and is compiled into nothing — Garnet speaks PostgreSQL only.
+The three warnings it also prints (`derivative`, `paste`, `lru`) come in through `alloy`.
 
 **You don't need a key to try it.** With no keys in the environment the live path does
 not come up at all — `live path disabled: no keys are set, live wallets will be
