@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Garnet — self-hosted Polymarket copy-trading bot in Rust</title>
+<meta name="description" content="Garnet is a self-hosted Polymarket copy trading bot written in Rust. You pick the wallets, it mirrors their trades. Shadow mode at real fees, Telegram control, and your private key never leaves your server. Free for individuals.">
+<link rel="canonical" href="https://andreyschurko.github.io/garnet-polymarket/">
+<meta name="theme-color" content="#0d0b10">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Garnet">
+<meta property="og:title" content="Garnet — self-hosted Polymarket copy-trading bot in Rust">
+<meta property="og:description" content="You pick the wallets, it mirrors their trades. Shadow mode at real fees, Telegram control, your key stays on your server.">
+<meta property="og:url" content="https://andreyschurko.github.io/garnet-polymarket/">
+<meta property="og:image" content="https://andreyschurko.github.io/garnet-polymarket/assets/og.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Garnet — self-hosted Polymarket copy-trading bot in Rust">
+<meta name="twitter:description" content="You pick the wallets, it mirrors their trades. Shadow mode at real fees, Telegram control, your key stays on your server.">
+<meta name="twitter:image" content="https://andreyschurko.github.io/garnet-polymarket/assets/og.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Garnet",
+  "description": "Self-hosted copy-trading engine for Polymarket, written in Rust. Mirrors the wallets its operator picks, with a shadow mode at real fees and Telegram control.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Linux, macOS",
+  "programmingLanguage": "Rust",
+  "softwareVersion": "0.1.0",
+  "license": "https://github.com/AndreySchurko/garnet-polymarket/blob/main/LICENSE",
+  "codeRepository": "https://github.com/AndreySchurko/garnet-polymarket",
+  "url": "https://andreyschurko.github.io/garnet-polymarket/",
+  "image": "https://andreyschurko.github.io/garnet-polymarket/assets/og.png",
+  "author": {"@type": "Person", "name": "Andrey Schurko", "url": "https://github.com/AndreySchurko"},
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free for individuals trading their own funds"}
+}
+</script>
+
+<style>
+  :root{
+    --bg:#0d0b10; --bg2:#15111a; --card:#1a1520; --line:#2c2433;
+    --text:#f1edf4; --muted:#b4a9bf; --dim:#8a7f96;
+    --accent:#e11d48; --accent2:#fb7185; --silver:#d9dce1;
+    --code:#0f0c13;
+    --max:1080px;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#ffffff; --bg2:#f7f4f8; --card:#ffffff; --line:#e6dfe9;
+      --text:#17121b; --muted:#5b5163; --dim:#7a7083;
+      --accent:#be123c; --accent2:#be123c; --silver:#4b5563;
+      --code:#f4f1f6;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  a{color:var(--accent2)}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 16px}
+  .hero .wrap>*,.grid>*{min-width:0}
+  h1,h2,h3,p,li{overflow-wrap:break-word}
+  header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:58px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;font-weight:700;letter-spacing:.2px}
+  .brand img{width:28px;height:28px}
+  nav a{color:var(--muted);text-decoration:none;margin-left:20px;font-size:15px}
+  nav a:hover{color:var(--text)}
+  @media (max-width:720px){nav a:not(.gh){display:none}}
+
+  .hero{padding:64px 0 40px;background:
+     radial-gradient(800px 380px at 85% 0%, color-mix(in srgb,var(--accent) 22%,transparent), transparent 70%),
+     radial-gradient(600px 400px at 0% 100%, rgba(109,40,217,.16), transparent 70%)}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+  @media (max-width:860px){.hero .wrap{grid-template-columns:1fr}.hero .art{order:-1;max-width:300px;margin:0 auto}}
+  .eyebrow{color:var(--accent2);font-weight:700;font-size:14px;letter-spacing:1.4px;text-transform:uppercase;margin:0 0 12px}
+  h1{font-size:clamp(34px,5vw,54px);line-height:1.08;margin:0 0 18px;letter-spacing:-1px}
+  .lead{font-size:20px;color:var(--muted);margin:0 0 28px;max-width:34em}
+  .cta{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;font-weight:600;text-decoration:none;font-size:16px}
+  .btn.primary{background:var(--accent);color:#fff}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .btn.ghost{border:1px solid var(--line);color:var(--text);background:var(--card)}
+  .art img{width:100%;height:auto;display:block}
+  .facts{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:26px;color:var(--dim);font-size:14px}
+  .facts b{color:var(--text);font-weight:600}
+
+  section{padding:56px 0;border-top:1px solid var(--line)}
+  section.alt{background:var(--bg2)}
+  h2{font-size:clamp(26px,3.4vw,34px);line-height:1.2;margin:0 0 10px;letter-spacing:-.4px}
+  .sub{color:var(--muted);margin:0 0 30px;max-width:44em}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media (max-width:760px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px 18px}
+  .card h3{margin:0 0 8px;font-size:19px}
+  .card p,.card li{color:var(--muted);font-size:16px}
+  .card p{margin:0 0 8px}
+  .card ul{margin:6px 0 0;padding-left:20px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em;background:var(--code);
+    border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow-x:auto;
+    font:14px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text);margin:0 0 18px}
+  pre code{background:none;border:0;padding:0;font-size:inherit}
+  .muted{color:var(--dim)}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600}
+  td code{white-space:nowrap}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+  .note{border-left:3px solid var(--accent);background:var(--card);padding:14px 18px;border-radius:0 10px 10px 0;color:var(--muted);margin:22px 0 0}
+  details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:12px}
+  summary{cursor:pointer;font-weight:600}
+  details p{color:var(--muted);margin:10px 0 0}
+  footer{padding:36px 0 48px;border-top:1px solid var(--line);color:var(--dim);font-size:14px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="assets/icon-32.png" alt="" width="28" height="28">Garnet</a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#key">Your key</a>
+      <a href="#start">Quick start</a>
+      <a href="#faq">FAQ</a>
+      <a class="gh" href="https://github.com/AndreySchurko/garnet-polymarket">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Self-hosted · Rust · Polymarket</p>
+      <h1>The Polymarket copy-trading bot you run yourself</h1>
+      <p class="lead">You pick the wallets. Garnet mirrors their trades on your own server, with your own key. No scoring, no screening, no opinions — and a shadow mode that pays the same fees as live, so you can judge a wallet before money follows it.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/AndreySchurko/garnet-polymarket">View on GitHub</a>
+        <a class="btn ghost" href="#start">Quick start</a>
+      </div>
+      <div class="facts">
+        <span><b>v0.1.0</b> · Sep 2026</span>
+        <span><b>669</b> tests · 0 warnings</span>
+        <span><b>15</b> crates on Tokio</span>
+        <span>Free for individuals</span>
+      </div>
+    </div>
+    <div class="art"><img src="assets/garnet-logo.png" alt="Garnet logo" width="640" height="596"></div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The uncomfortable truth</h2>
+    <p class="sub"><b>A copy-trading bot is worth nothing without profitable wallets to copy.</b> Execution speed, slippage control and settlement accounting only decide how much of someone else's edge survives the trip to your account. They cannot manufacture an edge that isn't there. So Garnet does one thing: you decide which wallets are worth copying, and it copies them — fast, and without second-guessing you.</p>
+  </div>
+</section>
+
+<section id="features" class="alt">
+  <div class="wrap">
+    <h2>What it actually does</h2>
+    <p class="sub">Detection, sizing, execution, accounting and settlement — each part built around a defect that once cost real money.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Three independent detection circuits</h3>
+        <p>On 31.08.2026 Polymarket's <code>activity/trades</code> topic went down platform-wide for hours. Garnet hears every trade three ways:</p>
+        <ul>
+          <li><b>RTDS websocket</b> — the fastest;</li>
+          <li><b><code>/activity</code> polling</b> — the safety net;</li>
+          <li><b>Polygon logs</b> — decoded from the verified V2 ABI, independent of Polymarket's infrastructure.</li>
+        </ul>
+        <p>All three collapse onto one dedup key: a third delivery, not a third truth.</p>
+      </div>
+      <div class="card">
+        <h3>Execution that knows the exchange</h3>
+        <ul>
+          <li>orders are <b>FAK</b> only — a resting order would make you a maker, the opposite of copying a taker;</li>
+          <li>size is <b>snapped to the exchange grid</b>, not rounded;</li>
+          <li>fill price comes from the trade feed, not from the order;</li>
+          <li><b>"rejected" and "unknown" are different outcomes</b> — retrying an accepted order once bought $2 where $1 was intended.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Live and shadow, side by side</h3>
+        <p>Shadow mode pays the <b>same fee</b>, uses the <b>same order path</b> and reads the <b>same book</b> — otherwise it would flatter itself by exactly the fee you forgot to charge. <code>/matchup</code> then shows your result against the leader's, fees included. The killswitch stops live trading and leaves shadow running.</p>
+      </div>
+      <div class="card">
+        <h3>Accounting reconciled against the chain</h3>
+        <p>Settlement is decided by <code>tokens[].winner</code> and <code>token_id</code> — never by outcome labels like Up/Down or team names. A reconciler compares the ledger with the chain every 10 minutes, and "could not read" is reported as its own outcome, never as "agreed".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Risk controls, and why each exists</h2>
+    <p class="sub">Every skipped trade gets one of seven named reasons, so you always know why the bot did not copy something.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Control</th><th>What it does</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><b>Killswitch</b></td><td>stops live trading, keeps positions</td><td>lives in the database — a stop that a restart undoes is not a stop</td></tr>
+          <tr><td><b>Daily loss stop</b></td><td>latches for the UTC day</td><td>a bot that merely loses money will not stop on its own</td></tr>
+          <tr><td><b>Exposure cap</b></td><td>a ceiling per <b>event</b>, not per token</td><td>outcomes of one condition are correlated</td></tr>
+          <tr><td><b>Fire-rate limit</b></td><td>entries per wallet per window</td><td>one leader once fired 12 decisions in a minute and caused 94% of the loss</td></tr>
+          <tr><td><b>Slice window</b></td><td>collapses one leader order into one copy</td><td>later slices of an already-copied order lost money</td></tr>
+          <tr><td><b>Health monitor</b></td><td>measured by flow, not liveness</td><td>both guards once reported OK while the bot was blind for 6.5 hours</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="key" class="alt">
+  <div class="wrap">
+    <h2>Your private key</h2>
+    <p class="sub">In 2026 GitHub filled up with "Polymarket copy-trading bots" that shipped the operator's <code>.env</code> to someone else's server, mostly through poisoned npm dependencies. You are right to ask what this one does with your key — and you can check the answer yourself.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Where it lives, where it never goes</h3>
+        <ul>
+          <li>in <code>.env</code> on your own machine, <code>chmod 600</code>, ignored by git;</li>
+          <li>it signs orders locally (EIP-712) — the signature goes to the exchange, the key does not;</li>
+          <li>it appears in logs as <code>***REDACTED***</code>, and a test holds that line;</li>
+          <li>no telemetry, no licence server, no update check.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Check it instead of trusting it</h3>
+        <ul>
+          <li>no npm — the engine is Rust end to end, every crate pinned in <code>Cargo.lock</code>;</li>
+          <li>the README lists <b>every host</b> the code talks to, with a one-line <code>grep</code> to verify it;</li>
+          <li><code>cargo audit</code> is clean apart from one crate that is not compiled in;</li>
+          <li>with no keys set, the live path does not come up at all — shadow mode runs on public data alone.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">Use a dedicated wallet funded with what you are prepared to lose. Garnet asks for one signing key and never for a seed phrase — anything that asks for a mnemonic to "copy trades" is not a copy-trading bot.</p>
+  </div>
+</section>
+
+<section id="start">
+  <div class="wrap">
+    <h2>Quick start</h2>
+    <p class="sub">Rust stable, Docker for Postgres, Redis and NATS, a Polymarket account with L2 API keys, and a Telegram bot token.</p>
+<pre><code>git clone https://github.com/AndreySchurko/garnet-polymarket.git
+cd garnet-polymarket
+docker compose up -d                       # Postgres, Redis, NATS
+cp .env.example .env                       # secrets, then chmod 600
+cp config.example.toml config.toml
+cargo build --release --bin garnet-core --bin garnet-tg --bin garnet-dash
+
+./target/release/garnet-core --config config.toml --preflight   # 13 probes</code></pre>
+    <p class="sub" style="margin-bottom:14px">Then start in shadow mode, from Telegram:</p>
+<pre><code>/add 0xWALLET…    copy this wallet from now on
+/mode shadow      paper trading: same fees, same book
+/stake 10         $10 per signal
+/health           is the flow alive?</code></pre>
+    <p class="muted">Run it for a few days and read <code>/pnl</code>, <code>/matchup</code> and <code>/slippage</code> before you consider <code>/mode live</code>. Full instructions are in the <a href="https://github.com/AndreySchurko/garnet-polymarket#-quick-start">README</a>.</p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>Need the wallets, not just the engine?</h2>
+    <p class="sub">Wallet Intelligence reports: wallets ranked from on-chain Polymarket history against filters you specify — ROI, trade count, hold time, drawdown, market type — with the metrics that decide how much of an edge survives a taker fill. Reports are data and analysis, not investment advice.</p>
+    <div class="cta">
+      <a class="btn ghost" href="mailto:andreyschurko@gmail.com?subject=Garnet%20wallet%20report">Ask for a quote</a>
+      <a class="btn ghost" href="https://github.com/AndreySchurko/garnet-polymarket#-wallet-intelligence--the-part-that-actually-makes-money">How reports work</a>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>FAQ</h2>
+    <details>
+      <summary>Is it profitable?</summary>
+      <p>By itself, no. Garnet has no opinion about which wallets are worth copying — that is the entire design. Run it in shadow mode with wallets you believe in and read <code>/matchup</code>: your result against the leader's, fees included, is the only honest answer.</p>
+    </details>
+    <details>
+      <summary>Is it open source?</summary>
+      <p>It is source-available under the Business Source License 1.1: free for individuals trading their own funds, with the full source to read and audit. Companies and funds need a commercial license. Each version converts to Apache-2.0 four years after release — for v0.1.0, on 2030-09-25.</p>
+    </details>
+    <details>
+      <summary>Can it front-run the leader?</summary>
+      <p>No, and nothing here claims otherwise. Garnet copies trades that have already executed. What it does is avoid losing seconds on top of that — nothing on the hot path waits sequentially when it could wait in parallel — and <code>/latency</code> measures the result end to end, per trade, on your own server.</p>
+    </details>
+    <details>
+      <summary>Where should I run it?</summary>
+      <p>On a VPS close to Polymarket's infrastructure, in a jurisdiction where Polymarket allows trading. The README lists the providers and RPC endpoints the bot has actually been run with.</p>
+    </details>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Garnet · source-available under BUSL-1.1 · by <a href="https://github.com/AndreySchurko">Andrey Schurko</a></span>
+    <span><a href="https://github.com/AndreySchurko/garnet-polymarket">GitHub</a> · <a href="https://github.com/AndreySchurko/garnet-polymarket/discussions">Discussions</a> · <a href="mailto:andreyschurko@gmail.com">Email</a></span>
+    <span>Not investment advice. Trading on prediction markets can lose all the money you put in.</span>
+  </div>
+</footer>
+</body>
+</html>
