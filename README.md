@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⬡ Garnet
+<h1><img src="docs/assets/garnet-logo.png" alt="Garnet — Polymarket copy-trading bot" width="300"></h1>
 
 ### Self-hosted Polymarket copy-trading bot, written in Rust
 
