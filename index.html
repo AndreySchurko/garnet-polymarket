@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Garnet — self-hosted Polymarket copy-trading bot in Rust</title>
-<meta name="description" content="Garnet is a self-hosted Polymarket copy trading bot written in Rust. You pick the wallets, it mirrors their trades. Shadow mode at real fees, Telegram control, and your private key never leaves your server. Free for individuals.">
+<meta name="description" content="Garnet is a self-hosted Polymarket copy trading bot written in Rust. You pick the wallets, it mirrors their trades. Shadow mode at real fees, Telegram control, and your private key never leaves your server. Free for individuals; setup, maintenance and custom bots available.">
 <link rel="canonical" href="https://andreyschurko.github.io/garnet-polymarket/">
 <meta name="theme-color" content="#0d0b10">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
@@ -104,6 +104,7 @@
   .card p,.card li{color:var(--muted);font-size:16px}
   .card p{margin:0 0 8px}
   .card ul{margin:6px 0 0;padding-left:20px}
+  .card ul + p{margin-top:10px}
   code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em;background:var(--code);
     border:1px solid var(--line);border-radius:6px;padding:1px 6px}
   pre{background:var(--code);border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow-x:auto;
@@ -133,6 +134,7 @@
       <a href="#features">Features</a>
       <a href="#key">Your key</a>
       <a href="#start">Quick start</a>
+      <a href="#services">Services</a>
       <a href="#faq">FAQ</a>
       <a class="gh" href="https://github.com/AndreySchurko/garnet-polymarket">GitHub</a>
     </nav>
@@ -149,6 +151,7 @@
       <div class="cta">
         <a class="btn primary" href="https://github.com/AndreySchurko/garnet-polymarket">View on GitHub</a>
         <a class="btn ghost" href="#start">Quick start</a>
+        <a class="btn ghost" href="#services">Setup &amp; services</a>
       </div>
       <div class="facts">
         <span><b>v0.1.0</b> · Sep 2026</span>
@@ -273,13 +276,76 @@ cargo build --release --bin garnet-core --bin garnet-tg --bin garnet-dash
   </div>
 </section>
 
-<section class="alt">
+<section id="services" class="alt">
   <div class="wrap">
-    <h2>Need the wallets, not just the engine?</h2>
-    <p class="sub">Wallet Intelligence reports: wallets ranked from on-chain Polymarket history against filters you specify — ROI, trade count, hold time, drawdown, market type — with the metrics that decide how much of an edge survives a taker fill. Reports are data and analysis, not investment advice.</p>
-    <div class="cta">
-      <a class="btn ghost" href="mailto:andreyschurko@gmail.com?subject=Garnet%20wallet%20report">Ask for a quote</a>
-      <a class="btn ghost" href="https://github.com/AndreySchurko/garnet-polymarket#-wallet-intelligence--the-part-that-actually-makes-money">How reports work</a>
+    <h2>Services</h2>
+    <p class="sub">I build and run this software. If you would rather not do it yourself, I can do it for you. Scope and price are agreed up front, in writing; payment in crypto.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Wallet Intelligence reports</h3>
+        <p>The engine copies; the wallets decide the result. Reports rank wallets from on-chain Polymarket history against filters you set — ROI, trade count, hold time, drawdown, market type — with the metrics that decide how much of an edge survives a taker fill.</p>
+        <ul>
+          <li><b>One-shot</b> — a single report on your filters, CSV and analysis, addresses ready for <code>/add</code>;</li>
+          <li><b>Subscription</b> — regular re-runs, new qualifying wallets, alerts when a copied wallet stops working;</li>
+          <li><b>Institutional</b> — custom metrics, longer histories, raw data export, commercial license included.</li>
+        </ul>
+        <p class="muted">Data and analysis, not investment advice or a promise of returns.</p>
+      </div>
+      <div class="card">
+        <h3>Server setup &amp; deployment</h3>
+        <ul>
+          <li>VPS provisioning, hardening, users, firewall;</li>
+          <li>Docker, Postgres, Redis, NATS, systemd units;</li>
+          <li>Caddy and TLS for the dashboard;</li>
+          <li>Garnet installed and configured, preflight green;</li>
+          <li>your wallets loaded, shadow mode running;</li>
+          <li>a walkthrough so you understand what you now own.</li>
+        </ul>
+        <p class="muted">You hand over a bare server. You get back a working bot.</p>
+      </div>
+      <div class="card">
+        <h3>Maintenance &amp; monitoring</h3>
+        <ul>
+          <li>OS and dependency updates, backups;</li>
+          <li>monitoring and alerting that reaches you;</li>
+          <li>incident response when Polymarket changes an API;</li>
+          <li>upgrades to new Garnet releases;</li>
+          <li>a monthly health report on the bot and the server.</li>
+        </ul>
+        <p class="muted">A trading bot is not a set-and-forget asset. This is the part most people skip and then regret.</p>
+      </div>
+      <div class="card">
+        <h3>Customisation &amp; new modules</h3>
+        <ul>
+          <li>new exit strategies, sizing models, risk rules;</li>
+          <li>extra detection circuits and data sources;</li>
+          <li>custom reporting and dashboards;</li>
+          <li>integration with your own systems;</li>
+          <li>performance work on the hot path.</li>
+        </ul>
+        <p class="muted">Built to the repository's conventions, with tests, so it survives the next upgrade.</p>
+      </div>
+      <div class="card">
+        <h3>Trading bots, built to order</h3>
+        <p><b>Not only Polymarket.</b></p>
+        <ul>
+          <li>other prediction markets — Kalshi, Limitless and others;</li>
+          <li>centralised crypto exchanges — spot, futures, market making;</li>
+          <li>DEX and on-chain strategies;</li>
+          <li>copy trading, arbitrage, market making, custom logic;</li>
+          <li>Rust or Python, on your infrastructure or mine.</li>
+        </ul>
+        <p class="muted">Fifteen crates and 669 tests of evidence that I finish what I start.</p>
+      </div>
+      <div class="card">
+        <h3>Commercial license</h3>
+        <p>Garnet is free for individuals trading their own funds. Companies, funds and anyone trading third-party money need a commercial license. Evaluation is always free: read the code, run the tests and use shadow mode before any conversation about money.</p>
+        <p class="muted"><a href="https://github.com/AndreySchurko/garnet-polymarket/blob/main/LICENSE-COMMERCIAL.md">License terms</a></p>
+      </div>
+    </div>
+    <div class="cta" style="margin-top:26px">
+      <a class="btn primary" href="mailto:andreyschurko@gmail.com?subject=Garnet%20services">Email andreyschurko@gmail.com</a>
+      <a class="btn ghost" href="https://github.com/AndreySchurko/garnet-polymarket#-services">Details in the README</a>
     </div>
   </div>
 </section>
